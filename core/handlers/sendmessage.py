@@ -48,13 +48,13 @@ async def send_number(message: Message, bot: Bot, state: FSMContext):
 @router.message(SendMessage.text_states)
 async def text(message: Message, bot: Bot, state: FSMContext, request: Request):
     context_data = await state.get_data()
-    time_step = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
     user_id = message.from_user.id
     name = context_data.get("name")
     number_phone = context_data.get("number_phone")
     message_text = message.text.lower()
-    await AddMessage(time_step, user_id, name, number_phone, message_text).add_message()
-    await request.add_massage(time_step, user_id, name, number_phone, message_text)
+    await AddMessage(timestamp, user_id, name, number_phone, message_text).add_message()
+    await request.add_massage(timestamp, user_id, name, number_phone, message_text)
     await delete_mess(message, bot)
     photo = FSInputFile(os.path.abspath('media/startwindow/IMG_3432.JPG'))
     await bot.send_photo(chat_id=message.chat.id, photo=photo,

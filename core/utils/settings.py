@@ -12,6 +12,13 @@ class Database:
 
 
 @dataclass
+class Redis:
+    url: str
+    port: int
+    host: str
+
+
+@dataclass
 class Bots:
     bot_token: str
     admin_id: int
@@ -21,6 +28,7 @@ class Bots:
 class Settings:
     bots: Bots
     database: Database
+    redis: Redis
 
 
 def get_settings(path: str) -> Settings:
@@ -35,6 +43,9 @@ def get_settings(path: str) -> Settings:
         db_username = env.str('DB_USERNAME')
         db_password = env.str('DB_PASSWORD')
         db_name = env.str('DB_NAME')
+        redis_url = env.str('REDIS_URL')
+        redis_port = env.int('REDIS_LOCAL_PORT')
+        redis_host = env.str('REDIS_HOST')
     except Exception as e:
         raise ValueError("Ошибка при чтении переменных окружения: " + str(e))
 
@@ -49,6 +60,11 @@ def get_settings(path: str) -> Settings:
             username=db_username,
             password=db_password,
             database_name=db_name
+        ),
+        redis=Redis(
+            url=redis_url,
+            port=redis_port,
+            host=redis_host
         )
     )
 

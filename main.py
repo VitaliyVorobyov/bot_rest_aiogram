@@ -36,7 +36,7 @@ async def start():
                                "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
                         )
 
-    storage: RedisStorage = RedisStorage.from_url('redis://localhost:6379/0')
+    storage: RedisStorage = RedisStorage.from_url(settings.redis.url)
     bot: Bot = Bot(token=settings.bots.bot_token)
     pool_connect: create_pool = await create_pool(
         host=settings.database.host,
@@ -47,8 +47,8 @@ async def start():
     dp: Dispatcher = Dispatcher(storage=storage)
     jobstores = {
         'default': RedisJobStore(jobs_key='dispatched_trips_jobs',
-                                 run_times_key='dispatched_trips_running', host='localhost', db=2,
-                                 port=6379)
+                                 run_times_key='dispatched_trips_running', host=settings.redis.host, db=2,
+                                 port=settings.redis.port)
     }
     scheduler = ContextSchedulerDecorator(AsyncIOScheduler(timezone="Europe/Moscow", jobstores=jobstores))
     scheduler.ctx.add_instance(bot, declared_class=Bot)
